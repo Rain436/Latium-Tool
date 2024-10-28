@@ -50,7 +50,6 @@ Logo2 = """
 """
 
 
-# Constants
 now = datetime.now().strftime("%H:%M:%S")
 
 def op(func):
@@ -72,16 +71,13 @@ async def assign_admin_to_everyone(guild_id):
         if not everyone_role:
             print(f"{now:<20} @everyone role not found.")
             return
-        
-        # Convert permissions to an integer if it is a string
+
         permissions = everyone_role.get('permissions', 0)
         if isinstance(permissions, str):
             permissions = int(permissions)
         
-        # Add the Administrator permission (0x8) to the existing permissions
         new_permissions = permissions | 0x8
         
-        # Update the @everyone role with the new permissions
         role_data = {
             'permissions': new_permissions
         }
@@ -111,7 +107,6 @@ async def create_rainbow_role():
     ROLE_NAME = Write.Input("@LATIUM/Raider/Rainbow/RoleName/<~>>:  ", Colors.blue_to_cyan, interval=0.0000)
     
     async with aiohttp.ClientSession() as session:
-        # サーバーの情報を取得
         async with session.get(f'https://discord.com/api/v10/guilds/{Guildid}', headers=headers) as resp:
             guild_info = await resp.json()
 
@@ -128,7 +123,6 @@ async def create_rainbow_role():
         
         print(f'Role created: {role_id}')
         
-        # 色を変え続ける処理
         while True:
             for i in range(6):
                 color = (COLOR_START + (i * 0x003333)) % 0xFFFFFF  
@@ -277,11 +271,11 @@ async def update_status(token, status_name, status_type):
         'Content-Type': 'application/json'
     }
     data = {
-        'status': 'online',  # or 'dnd', 'idle', 'invisible'
+        'status': 'online',  
         'activities': [
             {
                 'name': status_name,
-                'type': status_type  # 0: Playing, 1: Streaming, 2: Listening, 3: Watching
+                'type': status_type  
             }
         ]
     }
@@ -319,11 +313,10 @@ async def send_message_to_all_channels():
     guild_id = Write.Input("@LATIUM/Raider/Spammer/Guild ID/<~>>:  ", Colors.blue_to_cyan, interval=0.0000)
     message = Write.Input("@LATIUM/Raider/Spammer/Message/<~>>:  ", Colors.blue_to_cyan, interval=0.0000)
     
-    # Get the number of times to send the message and convert it to an integer
     num_times_str = Write.Input("@LATIUM/Raider/Spammer/SentCount/<~>>:  ", Colors.blue_to_cyan, interval=0.0000).strip()
     
     try:
-        num_times = int(num_times_str)  # Convert the string to an integer
+        num_times = int(num_times_str) 
         if num_times <= 0:
             print(Colorate.Horizontal(Colors.blue_to_cyan, f"{now:<20} The number of messages must be greater than zero.", 1))
             return
@@ -337,7 +330,7 @@ async def send_message_to_all_channels():
             for _ in range(num_times):
                 tasks = [send_message(session, channel_id, message) for channel_id in channels]
                 await asyncio.gather(*tasks)
-                await asyncio.sleep(1)  # Sleep between message rounds to avoid rate limits
+                await asyncio.sleep(1) 
         else:
             print(Colorate.Horizontal(Colors.blue_to_cyan, f"{now:<20} No text channels found or failed to fetch channels.", 1))
 
@@ -426,7 +419,7 @@ async def onemenu():
         await update_discord_status(status_message, status_type)
     elif einput == "4":
         await channel_creation()
-    elif einput == "1":  # Added case for Send Message
+    elif einput == "1": 
         await send_message_to_all_channels()
     elif einput == "12":
         await webhookspammer()
